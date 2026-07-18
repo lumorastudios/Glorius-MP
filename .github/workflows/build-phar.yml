@@ -2,31 +2,24 @@ name: Build PocketMine-MP.phar
 
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build server phar
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: Setup PocketMine PHP
+        uses: pmmp/setup-php-action@4
         with:
           php-version: "8.2"
-          tools: composer
-          coverage: none
-
-      - name: Validate Composer
-        run: composer validate --no-check-publish
-
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
 
       - name: Build PHAR
         run: composer make-server
@@ -36,4 +29,3 @@ jobs:
         with:
           name: PocketMine-MP.phar
           path: PocketMine-MP.phar
-          if-no-files-found: error
